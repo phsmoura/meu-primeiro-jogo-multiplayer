@@ -1,0 +1,41 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>jogo</title>
+    <style>
+        #screen {
+            border: 10px solid #CCC;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <canvas id="screen" height="10" width="10"></canvas>
+    <script type="module">
+        import createKeyboardListener from './keyboard-listener.js'
+        import createGame from './game.js'
+        import renderScreen from './render-screen.js'
+
+        const game = createGame()
+        const keyboardListener = createKeyboardListener(document)
+        keyboardListener.subscribe(game.movePlayer)
+
+        const screen = document.getElementById('screen')
+        const currentPlayerId = 'player1'
+
+        renderScreen(screen, game, requestAnimationFrame)
+
+        const socket = io()
+
+        socket.on('connect', () => {
+            const playerId = socket.id
+            console.log(`player connected on client side with id: ${playerId}`)
+        })
+    </script>
+</body>
+</html>
